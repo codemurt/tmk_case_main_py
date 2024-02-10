@@ -48,14 +48,14 @@ def callback_query(call):
     elif call.data == "steel":
         valute = metal_manger.get_data('STL')
         if valute is not None:
-            bot.send_message(call.message.chat.id, f"Текущий курс стали: {valute} дол.")
+            bot.send_message(call.message.chat.id, f"Текущий курс стали: {valute}, $/т")
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
 
     elif call.data == "cast_iron":
         valute = metal_manger.get_data('IRN')
         if valute is not None:
-            bot.send_message(call.message.chat.id, f"Текущий курс чугуна: {valute} дол.")
+            bot.send_message(call.message.chat.id, f"Текущий курс чугуна: {valute} $/т., exw, внутр. цены России, без НДС")
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
 
