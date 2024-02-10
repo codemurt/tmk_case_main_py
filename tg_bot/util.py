@@ -35,9 +35,9 @@ class ValManager(Manager):
 
         for valcurs in xmldict:
             if valcurs['CharCode'] == "CNY":
-                cny = valcurs['Value']
+                cny = float(valcurs['Value'].replace(',', '.'))
             elif valcurs['CharCode'] == 'USD':
-                usd = valcurs['Value']
+                usd = float(valcurs['Value'].replace(',', '.'))
 
         self._data['CNY'] = cny
         self._data['USD'] = usd
