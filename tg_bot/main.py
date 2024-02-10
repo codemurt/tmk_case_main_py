@@ -9,6 +9,7 @@ load_dotenv()
 bot_token = getenv('BOT_TOKEN')
 bot = TeleBot(bot_token)
 val_manager = ValManager(4 * 60 * 60)
+metal_manger = MetalManager(4 * 60 * 60)
 
 @bot.message_handler(commands = ["start"])
 def start(message):
@@ -45,14 +46,14 @@ def callback_query(call):
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
     elif call.data == "steel":
-        valute = val_manager.get_data('STL')
+        valute = metal_manger.get_data('STL')
         if valute is not None:
             bot.send_message(call.message.chat.id, f"Текущий курс стали: {valute} дол.")
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
 
     elif call.data == "cast_iron":
-        valute = val_manager.get_data('IRN')
+        valute = metal_manger.get_data('IRN')
         if valute is not None:
             bot.send_message(call.message.chat.id, f"Текущий курс чугуна: {valute} дол.")
         else:

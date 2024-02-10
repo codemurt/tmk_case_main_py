@@ -9,6 +9,7 @@ class Manager:
         self.update_time = update_time
         self._data = {}
         self._last_update_time = 0.0
+        self._update_data()
 
     def _update_data(self):
         pass
@@ -57,7 +58,7 @@ class MetalManager(Manager):
         elem = soup.find_all('td', string='Чугун передельный, exw, внутр. цены России, без НДС, $/т')
 
         next_td_tag = elem[0].findNext('td')
-        cast_iron_value = float(next_td_tag.text)
+        cast_iron_value = float(next_td_tag.text.replace(',', '.'))
         self._data['IRN'] = cast_iron_value
 
         page_steel = requests.get('https://www.metaltorg.ru/metal_catalog/listovoi_prokat/list_rulon_bez_pokrytiya/goryachekatanaya_rulonnaya_stal/')
@@ -67,7 +68,7 @@ class MetalManager(Manager):
         elem_steel = soup_steel.find_all('td', string='Г/к рулонная сталь, ShFE, фев. 2024 поставка в ближайший месяц, $/т')
 
         next_td_tag_steel = elem_steel[0].findNext('td')
-        steel_value = float(next_td_tag_steel.text)
+        steel_value = float(next_td_tag_steel.text.replace(',', '.'))
         self._data['STL'] = steel_value
 
         self._last_update_time = time()
