@@ -14,7 +14,7 @@ val_manager = ValManager(4 * 60 * 60)
 def start(message):
     markup = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton('Курс валюты', callback_data='currency')
-    btn2 = InlineKeyboardButton('Курс металла', callback_data='matal')
+    btn2 = InlineKeyboardButton('Курс металла', callback_data='metal')
     markup.add(btn1, btn2)
     bot.send_message(message.from_user.id, "Выберите что вы хотите узнать?", reply_markup=markup)
 
@@ -26,7 +26,7 @@ def callback_query(call):
         dollar_button = InlineKeyboardButton('🇺🇸 к 🇷🇺', callback_data='dollar')
         markup_val.add(cny_button, dollar_button)
         bot.send_message(call.message.chat.id, "Выберите валюты", reply_markup=markup_val)
-    elif call.data == "matal":
+    elif call.data == "metal":
         markup_metal = InlineKeyboardMarkup()
         steel_button = InlineKeyboardButton('Стоимость стали', callback_data='steel')
         cast_iron_button = InlineKeyboardButton('Стоимость чугуна', callback_data='cast_iron')
@@ -42,6 +42,19 @@ def callback_query(call):
         valute = val_manager.get_data('USD')
         if valute is not None:
             bot.send_message(call.message.chat.id, f"Текущий курс Доллара к Рублю:\n1 доллар = {valute} руб.")
+        else:
+            bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
+    elif call.data == "steel":
+        valute = val_manager.get_data('STL')
+        if valute is not None:
+            bot.send_message(call.message.chat.id, f"Текущий курс стали: {valute} дол.")
+        else:
+            bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
+
+    elif call.data == "cast_iron":
+        valute = val_manager.get_data('IRN')
+        if valute is not None:
+            bot.send_message(call.message.chat.id, f"Текущий курс чугуна: {valute} дол.")
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
 

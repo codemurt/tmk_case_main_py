@@ -2,6 +2,8 @@ import requests
 import xmltodict
 from time import time
 
+from bs4 import BeautifulSoup
+
 class Manager:
     def __init__(self, update_time):
         self.update_time = update_time
@@ -38,4 +40,34 @@ class ValManager(Manager):
 
         self._data['CNY'] = cny
         self._data['USD'] = usd
+        self._last_update_time = time()
+
+class MetalManager(Manager):
+    def __init__(self, update_time):
+        super().__init__(update_time)
+
+    def _update_data(self):
+        cast_iron = None
+        steel = None
+
+        page_cast_iron = requests.get('https://www.metaltorg.ru/metal_catalog/metallurgicheskoye_syrye_i_polufabrikaty/chugun/chugun_peredelnyi/')
+
+        soup = BeautifulSoup(page_cast_iron.text, "html.parser")
+
+        elem = soup.find_all('td', string='Чугун передельный, exw, внутр. цены России, без НДС, $/т')
+
+        next_td_tag = elem[0].findNext('td')
+        cast_iron_value = float(next_td_tag.text)
+        self._data['IRN'] = cast_iron_value
+
+        page_steel = requests.get('https://www.metaltorg.ru/metal_catalog/listovoi_prokat/list_rulon_bez_pokrytiya/goryachekatanaya_rulonnaya_stal/')
+
+        soup_steel = BeautifulSoup(page_steel.text, "html.parser")
+
+        elem_steel = soup_steel.find_all('td', string='Г/к рулонная сталь, ShFE, фев. 2024 поставка в ближайший месяц, $/т')
+
+        next_td_tag_steel = elem_steel[0].findNext('td')
+        steel_value = float(next_td_tag_steel.text)
+        self._data['STL'] = steel_value
+
         self._last_update_time = time()
