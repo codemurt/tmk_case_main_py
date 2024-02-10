@@ -3,6 +3,7 @@ from telebot import TeleBot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
 from os import getenv
+import logging
 
 load_dotenv()
 
@@ -11,12 +12,15 @@ bot = TeleBot(bot_token)
 val_manager = ValManager(4 * 60 * 60)
 metal_manger = MetalManager(4 * 60 * 60)
 
+logging.basicConfig(filemode='a', level=logging.INFO)
+
 @bot.message_handler(commands = ["start"])
 def start(message):
     markup = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton('Курс валюты', callback_data='currency')
     btn2 = InlineKeyboardButton('Курс металла', callback_data='metal')
     markup.add(btn1, btn2)
+    logging.info(f'Start: {time.asctime()}. Message: {message}')
     bot.send_message(message.from_user.id, "Выберите что вы хотите узнать?", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -58,6 +62,8 @@ def callback_query(call):
             bot.send_message(call.message.chat.id, f"Текущий курс чугуна: {valute} $/т., exw, внутр. цены России, без НДС")
         else:
             bot.send_message(call.message.chat.id, "Данные не найдены. Извините")
+
+    logging.info(f'Callback_query: {time.asctime()}. Callback: {call.data}')
 
 if __name__ == "__main__":
     bot.infinity_polling()
